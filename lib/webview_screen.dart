@@ -9,9 +9,25 @@ class WebviewScreen extends StatefulWidget {
 }
 
 class _WebviewScreenState extends State<WebviewScreen> {
-  final controller = WebViewController()
-    ..setJavaScriptMode(JavaScriptMode.unrestricted)
-    ..loadRequest(Uri.parse('https://easyisp24.com/'));
+  bool _canGoBack = false;
+
+  final controller = WebViewController();
+
+  @override
+  void initState() {
+    super.initState();
+    controller
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setNavigationDelegate(NavigationDelegate(
+        onPageFinished: (url) async {
+          final canGoBack = await controller.canGoBack();
+          setState(() {
+            _canGoBack = canGoBack;
+          });
+        },
+      ))
+      ..loadRequest(Uri.parse('https://easyisp24.com/'));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,12 +42,12 @@ class _WebviewScreenState extends State<WebviewScreen> {
         appBar: AppBar(
           title: Text('Easy ISP 24'),
           backgroundColor: Colors.deepPurple.shade50,
-          leading: IconButton(
-            onPressed: () {
-              controller.goBack();
-            },
+          leading: _canGoBack
+              ? IconButton(
+            onPressed: () => controller.goBack(),
             icon: Icon(Icons.arrow_back_ios),
-          ),
+          )
+              : null,
         ),
         body: WebViewWidget(controller: controller),
       ),
