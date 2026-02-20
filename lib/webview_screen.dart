@@ -40,7 +40,7 @@ class _WebviewScreenState extends State<WebviewScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Easy ISP 24'),
+          title: Text('EasyISP24', style: TextStyle(fontWeight: FontWeight.bold),),
           backgroundColor: Colors.deepPurple.shade50,
           leading: _canGoBack
               ? IconButton(
