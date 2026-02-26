@@ -20,9 +20,9 @@ class _WebviewScreenState extends State<WebviewScreen> {
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(NavigationDelegate(
         onPageFinished: (url) async {
-          final canGoBack = await controller.canGoBack();
+          print('Current URL: $url');
           setState(() {
-            _canGoBack = canGoBack;
+            _canGoBack = url != 'https://easyisp24.com/';
           });
         },
       ))
@@ -40,11 +40,18 @@ class _WebviewScreenState extends State<WebviewScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text('EasyISP24', style: TextStyle(fontWeight: FontWeight.bold),),
+          title: Text('EasyISP24', style: TextStyle(fontWeight: FontWeight.bold)),
           backgroundColor: Colors.deepPurple.shade50,
           leading: _canGoBack
               ? IconButton(
-            onPressed: () => controller.goBack(),
+            onPressed: () async {
+              await controller.goBack();
+              await Future.delayed(Duration(milliseconds: 200));
+              final canGoBack = await controller.canGoBack();
+              setState(() {
+                _canGoBack = canGoBack;
+              });
+            },
             icon: Icon(Icons.arrow_back_ios),
           )
               : null,
